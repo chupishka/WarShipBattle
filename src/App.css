@@ -1,0 +1,13 @@
+@font-face {
+    font-family: "BitCount";
+    src: url("./assets/fonts/BitcountGridDouble-Regular.ttf") format("truetype");
+}
+.main_name {
+    font-family: "BitCount",sans-serif;
+    font-size: 30px;
+    color: aliceblue;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-right: 1%;
+}
