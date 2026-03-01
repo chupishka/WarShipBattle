@@ -3,7 +3,7 @@ import BattleGrid from './battle-grid';
 import PlayerInfo from './player-info';
 
 // Тестовые данные - мое поле (вижу свои корабли и куда стрелял враг)
-const testMyField:Field = [
+const testMyField: Field = [
   [2, 2, 2, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 2, 2, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 2, 2, 2],
@@ -13,11 +13,11 @@ const testMyField:Field = [
   [0, 0, 0, 0, 0, 0, 0, 4, 4, 0],
   [0, 0, 2, 2, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 2, 0]
+  [0, 0, 0, 0, 0, 0, 0, 0, 2, 0],
 ];
 
 // Тестовые данные - поле врага (вижу только свои выстрелы)
-const testEnemyField:Field = [
+const testEnemyField: Field = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 3, 0, 0, 0, 0, 0, 0],
@@ -27,11 +27,10 @@ const testEnemyField:Field = [
   [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 2, 0, 0, 0, 0, 1, 0],
-  [0, 0, 0, 2, 0, 0, 0, 0, 0, 0]
+  [0, 0, 0, 2, 0, 0, 0, 0, 0, 0],
 ];
 type CellState = 0 | 1 | 2 | 3 | 4;
 type Field = CellState[][];
-
 
 const GameBoard = () => {
   const [myField, setMyField] = useState<Field>(testMyField);
@@ -46,20 +45,18 @@ const GameBoard = () => {
     <div className="game-board">
       <div className="fields-container">
         <div className="field-section">
-          
           <h3 className="field-title">Ваше поле</h3>
           <BattleGrid field={myField} isEnemy={false} />
           <PlayerInfo nickname="ВашНик" /* avatarUrl={myAvatar} */ />
         </div>
-        
+
         <div className="field-section">
-          
           <h3 className="field-title">Поле противника</h3>
           <BattleGrid field={enemyField} isEnemy={true} onCellClick={handleEnemyCellClick} />
           <PlayerInfo nickname="Противник" isEnemy={true} /* avatarUrl={enemyAvatar} */ />
         </div>
       </div>
-      
+
       <style>{`
         .game-board {
           padding: 20px;

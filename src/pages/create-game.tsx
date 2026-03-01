@@ -1,15 +1,10 @@
 import React from 'react';
-
-import "../reset.css"
+import GameSetup from './GameSetup/game-setup';
+import '../reset.css';
 // import "./App.css"
 
-
-
 const CreateGame: React.FC = () => {
-  
-  return (
-    <div>Create-game</div>
-  );
+  return <div><GameSetup/></div>;
 };
 
 export default CreateGame;

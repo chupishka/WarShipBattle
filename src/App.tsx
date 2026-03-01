@@ -1,14 +1,11 @@
 import React from 'react';
-import {  Layout, Menu, theme } from 'antd';
+import { Layout, Menu, theme } from 'antd';
 import './reset.css';
 import './App.css';
 import { useNavigate } from 'react-router';
 import AppRoutes from './routes/routes';
 
 const { Header, Content } = Layout;
-
-
-
 
 const App: React.FC = () => {
   const {
@@ -41,23 +38,23 @@ const App: React.FC = () => {
           defaultSelectedKeys={['1']}
           items={[
             {
-              key: "1",
-              
+              key: '1',
+
               label: 'Главная',
-              onClick: ()=> navigate("/")
+              onClick: () => navigate('/'),
             },
             {
-              key: "2",
-              
+              key: '2',
+
               label: 'Cоздание игры',
-              onClick: ()=> navigate("/create-game")
+              onClick: () => navigate('/create-game'),
             },
             {
-              key: "3",
-              
+              key: '3',
+
               label: 'Подключение по коду',
-              onClick: ()=> navigate("/")
-            }
+              onClick: () => navigate('/'),
+            },
           ]}
           style={{ flex: 1, minWidth: 0 }}
         />
@@ -70,11 +67,9 @@ const App: React.FC = () => {
             padding: 24,
             borderRadius: borderRadiusLG,
           }}>
-            <AppRoutes />
-          </div>
-      
+          <AppRoutes />
+        </div>
       </Content>
-      
     </Layout>
   );
 };
