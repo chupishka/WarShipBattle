@@ -6,10 +6,9 @@ const CELL_STATE = {
   MISS: 1,
   UNDAMAGED: 2,
   DAMAGED: 3,
-  DESTROYED: 4
+  DESTROYED: 4,
 };
 type CellState = 0 | 1 | 2 | 3 | 4;
-
 
 interface CellProps {
   state: CellState;
@@ -42,11 +41,10 @@ const Cell: React.FC<CellProps> = ({ state, onClick, isHovered, onMouseEnter, on
       className={`cell ${isHovered ? 'cell-hovered' : ''}`}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-    >
+      onMouseLeave={onMouseLeave}>
       {getCellContent()}
     </div>
   );
 };
 
-export default Cell
+export default Cell;

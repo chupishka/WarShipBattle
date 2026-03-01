@@ -1,8 +1,7 @@
 import * as React from 'react';
-import Cell from "./cell"
+import Cell from './cell';
 import { useState } from 'react';
 import GameBoard from './game-board';
-
 
 type CellState = 0 | 1 | 2 | 3 | 4;
 
@@ -18,9 +17,9 @@ interface HoveredCell {
   row: number;
   col: number;
 }
-const BattleGrid: React.FC<BattleGridProps> = ({ field, isEnemy, onCellClick })=> {
+const BattleGrid: React.FC<BattleGridProps> = ({ field, isEnemy, onCellClick }) => {
   const [hoveredCell, setHoveredCell] = useState<HoveredCell | null>(null);
-  
+
   const columns = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
   const rows = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 
@@ -35,19 +34,23 @@ const BattleGrid: React.FC<BattleGridProps> = ({ field, isEnemy, onCellClick })=
       {/* Заголовки колонок (A-J) */}
       <div className="grid-header">
         <div className="corner-cell" />
-        {columns.map(col => (
-          <div key={col} className="coord-label">{col}</div>
+        {columns.map((col) => (
+          <div key={col} className="coord-label">
+            {col}
+          </div>
         ))}
       </div>
-      
+
       <div className="grid-body">
         {/* Заголовки строк (1-10) */}
         <div className="row-labels">
-          {rows.map(row => (
-            <div key={row} className="coord-label">{row}</div>
+          {rows.map((row) => (
+            <div key={row} className="coord-label">
+              {row}
+            </div>
           ))}
         </div>
-        
+
         {/* Игровое поле */}
         <div className="grid">
           {field.map((row, rowIndex) => (
@@ -70,4 +73,4 @@ const BattleGrid: React.FC<BattleGridProps> = ({ field, isEnemy, onCellClick })=
   );
 };
 
-export default BattleGrid
+export default BattleGrid;
