@@ -39,21 +39,21 @@ const App: React.FC = () => {
           items={[
             {
               key: '1',
-
-              label: 'Главная',
+              
+              label: <span style={{ userSelect: 'none' }}>Главная</span>,
               onClick: () => navigate('/'),
             },
             {
               key: '2',
 
-              label: 'Cоздание игры',
+              label: <span style={{ userSelect: 'none' }}>Создание игры</span>,
               onClick: () => navigate('/create-game'),
             },
             {
               key: '3',
 
-              label: 'Подключение по коду',
-              onClick: () => navigate('/'),
+              label: <span style={{ userSelect: 'none' }}>Профиль </span>,
+              onClick: () => navigate('/profile'),
             },
           ]}
           style={{ flex: 1, minWidth: 0 }}
