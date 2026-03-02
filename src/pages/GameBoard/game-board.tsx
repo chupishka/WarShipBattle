@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import BattleGrid from './battle-grid';
 import PlayerInfo from './player-info';
-
+import useGameSocket from '../hooks/use-game-socket';
+import { useParams } from 'react-router';
 // Тестовые данные - мое поле (вижу свои корабли и куда стрелял враг)
 const testMyField: Field = [
   [2, 2, 2, 0, 0, 0, 0, 0, 0, 0],
@@ -32,17 +33,57 @@ const testEnemyField: Field = [
 type CellState = 0 | 1 | 2 | 3 | 4;
 type Field = CellState[][];
 
-const GameBoard = () => {
+interface GameBoard {
+  // code: string;
+   // Колбэк при успешном подключении
+}
+
+const GameBoard : React.FC<GameBoard> = ({ }) => {
+
+  const { roomCode } = useParams<{ roomCode: string }>();
   const [myField, setMyField] = useState<Field>(testMyField);
   const [enemyField, setEnemyField] = useState<Field>(testEnemyField);
+  const {lastMessage,sendMessage} = useGameSocket(`game-${roomCode}`);
+  const [myTurn,setMyTurn] = useState<Boolean>(true)
+
+
+  type shootCords = { 
+    shoot : number[]
+  };
+
+
 
   const handleEnemyCellClick = (row: number, col: number): void => {
-    console.log(`Выстрел по координатам: ${String.fromCharCode(65 + col)}${row + 1}`);
+
+    if(!myTurn){return}
+    const cords : shootCords = {shoot:[row,col]}
+    sendMessage(cords);
+    setMyTurn(false);
     // Здесь будет логика отправки выстрола на бэкенд
   };
 
+  useEffect(() => {
+      if (!lastMessage) return;
+      console.log("пытаюсь получить поле")
+      console.log(lastMessage)
+      if (lastMessage?.isOwn) {
+        setMyField(lastMessage.field);
+        console.log("пытаюсь поставить свое поле")
+        setMyTurn(true)
+        
+      }
+      else {
+        console.log("пытаюсь поставить врага поле")
+        setEnemyField(lastMessage.field)
+      }
+    }, [lastMessage]);
+
   return (
+    
     <div className="game-board">
+      <div className={`turn-indicator ${myTurn ? 'my-turn' : 'enemy-turn'}`}>
+      {myTurn ? "⚔️ Ваш ход" : "⏳ Ход противника"}
+      </div>
       <div className="fields-container">
         <div className="field-section">
           <h3 className="field-title">Ваше поле</h3>
@@ -56,6 +97,7 @@ const GameBoard = () => {
           <PlayerInfo nickname="Противник" isEnemy={true} /* avatarUrl={enemyAvatar} */ />
         </div>
       </div>
+      
 
       <style>{`
         .game-board {
@@ -295,6 +337,44 @@ const GameBoard = () => {
         
         .cell-destroyed::after {
           transform: translate(-50%, -50%) rotate(-45deg);
+        }
+        .turn-indicator {
+          text-align: center;
+          margin-bottom: 30px;
+          padding: 15px 40px;
+          background: #1a1f2e;
+          border-radius: 12px;
+          border: 2px solid #3a4150;
+          font-size: 24px;
+          font-weight: bold;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+          width: fit-content;
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        .turn-indicator.my-turn {
+          color: #4ade80;
+          border-color: #4ade80;
+          text-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+        }
+
+        .turn-indicator.enemy-turn {
+          color: #ef4444;
+          border-color: #ef4444;
+          text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+        }
+
+        /* Анимация пульсации для активного хода */
+        @keyframes pulse-turn {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.02); }
+        }
+
+        .turn-indicator.my-turn {
+          animation: pulse-turn 2s infinite;
         }
       `}</style>
     </div>

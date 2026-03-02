@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Cell from './cell';
 import { useState } from 'react';
-import GameBoard from './game-board';
+
 
 type CellState = 0 | 1 | 2 | 3 | 4;
 

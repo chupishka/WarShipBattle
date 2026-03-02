@@ -2,13 +2,14 @@ import React, { useState, useEffect, useCallback } from 'react';
 import DockShip from './dock-ship';
 import DraggedShip from './dragged-ship';
 import RoomCodeModal from './room-code-modal';
-import TestSocket from '../test-socket';
-import useGameSocket from './use-game-socket';
+import JoinRoomModal from './join-room-modal';
+import AutoStrategyModal from './auto-strategy-modal';
 
+import { useNavigate } from 'react-router';
 // Типы
 type CellState = 0 | 1 | 2 | 3 | 4;
 type Field = CellState[][];
-type GameMode = 'bot' | 'player';
+type GameMode = 'bot' | 'player' | 'code';
 type BotDifficulty = 'easy' | 'medium' | 'hard';
 type Orientation = 'horizontal' | 'vertical';
 
@@ -46,11 +47,21 @@ const createEmptyField = (): Field =>
     .map(() => Array(10).fill(0));
 
 const GameSetup: React.FC = () => {
+
+  const navigate = useNavigate();
+
+  const handleJoinSuccess = (code: string) => {
+    // navigate сразу подставляет code в URL
+    navigate(`/game/${code}`);
+  };
+
+
   const [gameMode, setGameMode] = useState<GameMode>('bot');
   const [botDifficulty, setBotDifficulty] = useState<BotDifficulty>('medium');
   const [field, setField] = useState<Field>(createEmptyField());
   const [shipsInDock, setShipsInDock] = useState<Ship[]>(INITIAL_SHIPS);
   const [placedShips, setPlacedShips] = useState<PlacedShip[]>([]);
+
 
   // Состояние перетаскивания
   const [draggedShip, setDraggedShip] = useState<Ship | null>(null);
@@ -61,7 +72,26 @@ const GameSetup: React.FC = () => {
 
   // Модалка
   const [showModal, setShowModal] = useState(false);
-  const [roomCode, setRoomCode] = useState('');
+  const [showJoinModal, setShowJoinModal] = useState(false);
+  const [showStrategyModal, setShowStrategyModal] = useState(false);
+
+
+  const SetHandleStrategySelect = () => {
+  setShowStrategyModal(true);
+};
+
+
+  const handleStrategySelect = (field: Field) => {
+  setField(field);
+  
+  // Обновляем placedShips на основе field
+  const newPlacedShips: PlacedShip[] = [];
+  // ... логика парсинга field в placedShips
+  
+  setPlacedShips(newPlacedShips);
+  setShipsInDock(INITIAL_SHIPS.map(s => ({ ...s, count: 0 })));
+};
+
   // const { lastMessage, sendMessage } = useGameSocket('game');
   // useEffect(() => {
   //   if (lastMessage?.code) {
@@ -245,6 +275,17 @@ const GameSetup: React.FC = () => {
   };
 
   // Создание игры
+  const handleConnection = async () => {
+    const allShipsPlaced = shipsInDock.every((s) => s.count === 0);
+    if (!allShipsPlaced) return;
+    if (gameMode === 'code') {
+      
+      // sendMessage({field});
+      setShowJoinModal(true);
+    }
+  }
+
+
   const handleCreate = async () => {
     const allShipsPlaced = shipsInDock.every((s) => s.count === 0);
     if (!allShipsPlaced) return;
@@ -296,6 +337,11 @@ const GameSetup: React.FC = () => {
           className={gameMode === 'player' ? 'active' : ''}
           onClick={() => setGameMode('player')}>
           Игра с игроком
+        </button>
+        <button
+          className={gameMode === 'code' ? 'active' : ''}
+          onClick={() => setGameMode('code')}>
+          Подключение по коду
         </button>
       </div>
 
@@ -367,15 +413,30 @@ const GameSetup: React.FC = () => {
         <button className="reset-btn" onClick={handleReset}>
           Сброс
         </button>
-        <button className="auto-btn" onClick={handleAutoPlace}>
+        <button className="auto-btn" onClick={SetHandleStrategySelect}>
           Авто (стратегии)
         </button>
-        <button
+        {(gameMode==='code') ? (<button
+          className={`create-btn ${canCreate ? 'active' : ''}`}
+          onClick={handleConnection}
+          disabled={!canCreate}>
+          Подключиться
+        </button>) : (
+          <button
           className={`create-btn ${canCreate ? 'active' : ''}`}
           onClick={handleCreate}
           disabled={!canCreate}>
           Создать
         </button>
+        )
+
+        }
+        {/* <button
+          className={`create-btn ${canCreate ? 'active' : ''}`}
+          onClick={handleCreate}
+          disabled={!canCreate}>
+          Создать
+        </button> */}
       </div>
 
       {/* Перетаскиваемый корабль */}
@@ -389,6 +450,8 @@ const GameSetup: React.FC = () => {
 
       {/* Модалка с кодом */}
       {showModal && <RoomCodeModal field={field} onClose={() => setShowModal(false)} />}
+      {showJoinModal && <JoinRoomModal onSuccess = {handleJoinSuccess} onClose={() => setShowJoinModal(false) } fieldTo = {field} />}
+      {showStrategyModal && (<AutoStrategyModal onClose={() => setShowStrategyModal(false)}onSelect={handleStrategySelect} />)}  
 
       <style>{`
         .game-setup {
