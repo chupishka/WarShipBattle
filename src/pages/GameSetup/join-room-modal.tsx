@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useGameSocket from '../hooks/use-game-socket';
-
+import { usePlayer } from '../../context/player-context';
 interface JoinRoomModalProps {
   onClose: () => void;
   onSuccess?: (code:string) => void;
@@ -11,7 +11,7 @@ const JoinRoomModal: React.FC<JoinRoomModalProps> = ({ onClose, onSuccess ,field
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
+  const {playerData,getAvatarUrl} = usePlayer()
   const { isConnected, lastMessage, sendMessage, closeConnection } = useGameSocket('join');
 
   // Обработка ответа от бэкенда
@@ -20,7 +20,13 @@ const JoinRoomModal: React.FC<JoinRoomModalProps> = ({ onClose, onSuccess ,field
 
     if (lastMessage.success) {
       // Успешное подключение
-      sendMessage(fieldTo);
+      const data  = {
+      "field": fieldTo,
+      "nickname" : playerData.nickname,
+      "photo_index" : playerData.photoIndex
+
+    }
+      sendMessage(data);
       closeConnection();
       onSuccess?.(code);
       onClose();
@@ -47,7 +53,9 @@ const JoinRoomModal: React.FC<JoinRoomModalProps> = ({ onClose, onSuccess ,field
     setIsLoading(true);
 
     // Отправка кода на бэкенд
+    console.log("12312")
     if (isConnected) {
+      console.log("12312")
       sendMessage({ code: code.trim().toUpperCase() });
     }
   };

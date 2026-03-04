@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import useGameSocket from '../hooks/use-game-socket';
-
+import { usePlayer } from '../../context/player-context';
 // Компонент модалки с кодом комнаты
 const RoomCodeModal: React.FC<{ field: object; onClose: () => void }> = ({ field, onClose }) => {
+  const {playerData,getAvatarUrl} = usePlayer()
   const [copied, setCopied] = useState(false);
   const { isConnected, lastMessage, sendMessage, closeConnection } = useGameSocket('game');
   const [code, setCode] = useState('');
@@ -13,7 +14,15 @@ const RoomCodeModal: React.FC<{ field: object; onClose: () => void }> = ({ field
     if (!isConnected) return;
     console.log('Пытаемся отправить, isConnected:', isConnected);
     console.log('Отправляем field:', field);
-    sendMessage(field);
+    console.log('Отправляем playerData.nickname:', playerData.nickname);
+    console.log('Отправляем playerData.photoIndex:', playerData.photoIndex);
+    const data  = {
+      "field": field,
+      "nickname" : playerData.nickname,
+      "photo_index" : playerData.photoIndex
+
+    }
+    sendMessage(data);
   }, [isConnected]); // ← пустой массив, игнорируем warning или используем ref
 
   useEffect(() => {

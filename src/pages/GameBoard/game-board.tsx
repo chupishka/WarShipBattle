@@ -3,6 +3,8 @@ import BattleGrid from './battle-grid';
 import PlayerInfo from './player-info';
 import useGameSocket from '../hooks/use-game-socket';
 import { useParams } from 'react-router';
+import { usePlayer } from '../../context/player-context';
+
 // Тестовые данные - мое поле (вижу свои корабли и куда стрелял враг)
 const testMyField: Field = [
   [2, 2, 2, 0, 0, 0, 0, 0, 0, 0],
@@ -39,19 +41,41 @@ interface GameBoard {
 }
 
 const GameBoard : React.FC<GameBoard> = ({ }) => {
-
+  const {playerData,getAvatarUrl} = usePlayer()
   const { roomCode } = useParams<{ roomCode: string }>();
   const [myField, setMyField] = useState<Field>(testMyField);
   const [enemyField, setEnemyField] = useState<Field>(testEnemyField);
   const {lastMessage,sendMessage} = useGameSocket(`game-${roomCode}`);
+  // const { lastMessage: userMessage,sendMessage:sendUserMessage,isConnected:userConnected,closeConnection:userCloseConnection} = useGameSocket(`user`);
   const [myTurn,setMyTurn] = useState<Boolean>(true)
+  const [enemyNickname,setEnemyNickname] = useState<string>("Противник");
+  const [enemyPhoto,setEnemyPhoto] = useState<number>(0);
+  
+  // useEffect(() => {
+  //   if (!userConnected) return;
+  //   console.log("пытаюсь отправить код для никнеймы")
+  //   sendUserMessage({"code":roomCode})
+
+      
+  //   }, [userConnected]);
+
 
 
   type shootCords = { 
     shoot : number[]
   };
 
+  // useEffect(() => {
+  //   console.log("пытаюсь получить никнеймы")
+  //     if (!userMessage) return;
+  //     console.log("пытаюсь получить никнеймы")
+  //     console.log(userMessage)
+  //     setEnemyNickname(userMessage.nickname)
+  //     setEnemyPhoto(userMessage.photo_index)
+  //     userCloseConnection();
 
+      
+  //   }, [userMessage]);
 
   const handleEnemyCellClick = (row: number, col: number): void => {
 
@@ -76,6 +100,14 @@ const GameBoard : React.FC<GameBoard> = ({ }) => {
         console.log("пытаюсь поставить врага поле")
         setEnemyField(lastMessage.field)
       }
+      if (lastMessage?.nickname){
+        setEnemyNickname(lastMessage.nickname)
+        setEnemyPhoto(lastMessage.photo_index)
+      }
+      if (lastMessage?.photo_index){
+        
+        setEnemyPhoto(lastMessage.photo_index)
+      }
     }, [lastMessage]);
 
   return (
@@ -88,13 +120,13 @@ const GameBoard : React.FC<GameBoard> = ({ }) => {
         <div className="field-section">
           <h3 className="field-title">Ваше поле</h3>
           <BattleGrid field={myField} isEnemy={false} />
-          <PlayerInfo nickname="ВашНик" /* avatarUrl={myAvatar} */ />
+          <PlayerInfo nickname={playerData.nickname}  avatarUrl={getAvatarUrl()}  />
         </div>
 
         <div className="field-section">
           <h3 className="field-title">Поле противника</h3>
           <BattleGrid field={enemyField} isEnemy={true} onCellClick={handleEnemyCellClick} />
-          <PlayerInfo nickname="Противник" isEnemy={true} /* avatarUrl={enemyAvatar} */ />
+          <PlayerInfo nickname={enemyNickname} isEnemy={true}  avatarUrl={getAvatarUrl(enemyPhoto)}  />
         </div>
       </div>
       
