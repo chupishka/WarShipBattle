@@ -1,67 +1,56 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState} from 'react';
 import type { ReactNode } from 'react';
-// Типы
+
+const AVATARS_URL = [
+  'photo_1_2026-03-02_22-06-32.jpg',
+  'photo_2_2026-03-02_22-06-32.jpg',
+  'photo_3_2026-03-02_22-06-32.jpg',
+  'photo_4_2026-03-02_22-06-32.jpg',
+  'photo_5_2026-03-02_22-06-32.jpg',
+  'photo_6_2026-03-02_22-06-32.jpg',
+  'photo_7_2026-03-02_22-06-32.jpg',
+  'photo_8_2026-03-02_22-06-32.jpg',
+  'photo_9_2026-03-02_22-06-32.jpg',
+  'photo_10_2026-03-02_22-06-32.jpg'
+];
+
 interface PlayerData {
-  avatar: number;
   nickname: string;
+  photoIndex: number;
 }
 
 interface PlayerContextType {
   playerData: PlayerData;
   updatePlayer: (data: Partial<PlayerData>) => void;
-  isLoaded: boolean;
+  getAvatarUrl: (index?: number) => string;
 }
 
-// Начальные значения
-const DEFAULT_PLAYER: PlayerData = {
-  avatar: 0,
-  nickname: 'player',
+const defaultPlayerData: PlayerData = {
+  nickname: 'Гость',
+  photoIndex: 0,
 };
 
-// Создаём контекст
 const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
 
-// Провайдер
 export const PlayerProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [playerData, setPlayerData] = useState<PlayerData>(DEFAULT_PLAYER);
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  // Загрузка из localStorage при старте
-  useEffect(() => {
-    const saved = localStorage.getItem('playerData');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        setPlayerData({
-          avatar: parsed.avatar ?? DEFAULT_PLAYER.avatar,
-          nickname: parsed.nickname ?? DEFAULT_PLAYER.nickname,
-        });
-      } catch (e) {
-        console.error('Ошибка загрузки playerData:', e);
-      }
-    }
-    setIsLoaded(true);
-  }, []);
-
-  // Сохранение в localStorage при изменении
-  useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem('playerData', JSON.stringify(playerData));
-    }
-  }, [playerData, isLoaded]);
+  const [playerData, setPlayerData] = useState<PlayerData>(defaultPlayerData);
 
   const updatePlayer = (data: Partial<PlayerData>) => {
     setPlayerData(prev => ({ ...prev, ...data }));
   };
 
+  const getAvatarUrl = (index?: number) => {
+    const idx = index ?? playerData.photoIndex;
+    return `/img/avatars/${AVATARS_URL[idx]}`;
+  };
+
   return (
-    <PlayerContext.Provider value={{ playerData, updatePlayer, isLoaded }}>
+    <PlayerContext.Provider value={{ playerData, updatePlayer, getAvatarUrl }}>
       {children}
     </PlayerContext.Provider>
   );
 };
 
-// Хук для использования
 export const usePlayer = (): PlayerContextType => {
   const context = useContext(PlayerContext);
   if (!context) {

@@ -4,7 +4,7 @@ import './reset.css';
 import './App.css';
 import { useNavigate } from 'react-router';
 import AppRoutes from './routes/routes';
-
+import HeaderProfile from './header-profile';
 const { Header, Content } = Layout;
 
 const App: React.FC = () => {
@@ -58,6 +58,7 @@ const App: React.FC = () => {
           ]}
           style={{ flex: 1, minWidth: 0 }}
         />
+        <HeaderProfile />
       </Header>
       <Content style={{ padding: 30 }}>
         <div

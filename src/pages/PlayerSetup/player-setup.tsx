@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { usePlayer } from '../../context/player-context';
 
-// Цвета для placeholder аватаров
+// Цвета для placeholder аватаров (оставил для совместимости, хотя не используются)
 const AVATAR_COLORS = [
   '#ef4444', '#f97316', '#f59e0b', '#84cc16', '#22c55e',
   '#14b8a6', '#3b82f6', '#8b5cf6', '#d946ef', '#6b7280',
@@ -21,19 +21,17 @@ const AVATARS_URL = [
 ];
 
 const PlayerSetup: React.FC = () => {
-  const { playerData, updatePlayer, isLoaded } = usePlayer();
-  const [selectedAvatar, setSelectedAvatar] = useState<number>(0);
-  const [nickname, setNickname] = useState<string>('player');
+  const { playerData, updatePlayer } = usePlayer();
+  const [selectedAvatar, setSelectedAvatar] = useState<number>(playerData.photoIndex);
+  const [nickname, setNickname] = useState<string>(playerData.nickname);
   const [error, setError] = useState<string>('');
   const [saved, setSaved] = useState<boolean>(false);
 
-  // Загружаем текущие значения при монтировании
+  // Синхронизируем локальный стейт с контекстом при монтировании
   useEffect(() => {
-    if (isLoaded) {
-      setSelectedAvatar(playerData.avatar);
-      setNickname(playerData.nickname);
-    }
-  }, [isLoaded, playerData]);
+    setSelectedAvatar(playerData.photoIndex);
+    setNickname(playerData.nickname);
+  }, [playerData.photoIndex, playerData.nickname]);
 
   const validateNickname = (value: string): boolean => {
     if (value.trim().length === 0) {
@@ -62,19 +60,16 @@ const PlayerSetup: React.FC = () => {
 
   const handleSave = () => {
     if (!validateNickname(nickname)) return;
-
+    
+    // Обновляем глобальный контекст
     updatePlayer({
-      avatar: selectedAvatar,
-      nickname: nickname.trim(),
+      nickname: nickname,
+      photoIndex: selectedAvatar,
     });
 
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
-
-  if (!isLoaded) {
-    return <div className="loading">Загрузка...</div>;
-  }
 
   return (
     <div className="player-setup">
@@ -92,7 +87,6 @@ const PlayerSetup: React.FC = () => {
               <div className="avatar-circle">
                 <img src={`/img/avatars/${AVATARS_URL[index]}`} alt={`Аватар ${index + 1}`} />
               </div>
-              
             </button>
           ))}
         </div>
@@ -192,15 +186,15 @@ const PlayerSetup: React.FC = () => {
           width: 100%;
           height: 100%;
           border-radius: 50%;
-          overflow: hidden; /* ← Обрезает всё за пределами круга */
+          overflow: hidden;
           position: relative;
         }
 
         .avatar-circle img {
           width: 100%;
           height: 100%;
-          object-fit: cover; /* ← Масштабирует и обрезает лишнее */
-          object-position: center; /* ← Центрирует изображение */
+          object-fit: cover;
+          object-position: center;
         }
 
         .input-wrapper {
