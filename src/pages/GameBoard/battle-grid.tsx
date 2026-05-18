@@ -25,6 +25,7 @@ const BattleGrid: React.FC<BattleGridProps> = ({ field, isEnemy, onCellClick }) 
 
   const handleCellClick = (row: number, col: number) => {
     if (isEnemy) {
+      console.log("awdawda")
       onCellClick?.(row, col);
     }
   };

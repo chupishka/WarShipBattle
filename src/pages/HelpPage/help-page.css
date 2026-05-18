@@ -1,0 +1,264 @@
+.help-page {
+  min-height: 100vh;
+  background: #0b1120;
+  color: #e2e8f0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 24px;
+  background-image: 
+    linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.help-container {
+  max-width: 880px;
+  margin: 0 auto;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(0, 255, 136, 0.15);
+  border-radius: 12px;
+  padding: 40px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.4);
+}
+
+.help-title {
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 32px;
+  color: #00ff88;
+  text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+
+/* Навигация */
+.help-nav {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(0, 255, 136, 0.2);
+  border-radius: 8px;
+  padding: 20px 25px;
+  margin-bottom: 40px;
+}
+
+.help-nav-title {
+  font-size: 1.2rem;
+  color: #00ff88;
+  margin-bottom: 15px;
+  border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+  padding-bottom: 10px;
+  font-weight: 600;
+}
+
+.help-nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.help-nav-list li {
+  margin: 6px 0;
+}
+
+.help-subnav {
+  list-style: none;
+  padding-left: 18px;
+  margin-top: 4px;
+  border-left: 2px solid rgba(0, 255, 136, 0.2);
+}
+
+.help-link {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 4px 10px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  text-align: left;
+  font-family: inherit;
+  display: inline-block;
+}
+
+.help-link:hover {
+  color: #00ff88;
+  background: rgba(0, 255, 136, 0.1);
+  transform: translateX(4px);
+}
+
+.help-link.sub {
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+/* Секции */
+.help-section {
+  margin-bottom: 40px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  scroll-margin-top: 20px;
+}
+
+.help-section:last-of-type {
+  border-bottom: none;
+}
+
+.help-section h2 {
+  color: #00ff88;
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+
+.help-section h2::before {
+  content: '▸';
+  color: #00ff88;
+  font-size: 1.2rem;
+}
+
+.help-section p {
+  line-height: 1.7;
+  margin-bottom: 12px;
+  color: #cbd5e1;
+}
+
+.help-section ul {
+  margin: 10px 0 10px 20px;
+  padding: 0;
+}
+
+.help-section li {
+  margin: 8px 0;
+  line-height: 1.6;
+  color: #cbd5e1;
+}
+
+.help-subsection {
+  margin: 20px 0;
+  padding: 18px 22px;
+  background: rgba(30, 41, 59, 0.4);
+  border-radius: 8px;
+  border-left: 3px solid #00ff88;
+}
+
+.help-subsection h3 {
+  color: #38bdf8;
+  font-size: 1.15rem;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+/* Теги и выделения */
+.brand {
+  color: #00ff88;
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+}
+
+.mode-tag {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-right: 4px;
+}
+
+.mode-tag.bot { background: rgba(0, 255, 136, 0.15); color: #00ff88; }
+.mode-tag.pvp { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
+.mode-tag.join { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
+
+.difficulty {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-right: 4px;
+}
+
+.difficulty.easy { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+.difficulty.medium { background: rgba(234, 179, 8, 0.2); color: #facc15; }
+.difficulty.hard { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+
+.btn-ref {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.btn-ref.confirm { background: rgba(0, 255, 136, 0.15); color: #00ff88; }
+.btn-ref.auto { background: rgba(37, 99, 235, 0.2); color: #60a5fa; }
+.btn-ref.reset { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+.btn-ref.create { background: rgba(100, 116, 139, 0.2); color: #94a3b8; }
+
+/* Визуализация кораблей */
+.ships-info {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.ship-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(30, 41, 59, 0.6);
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 255, 136, 0.1);
+}
+
+.ship-count {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  margin-right: 6px;
+  font-weight: 600;
+}
+
+.ship-block {
+  display: inline-block;
+  height: 20px;
+  border-radius: 3px;
+  background: #00ff88;
+  box-shadow: 0 0 8px rgba(0, 255, 136, 0.4);
+}
+
+.ship-block.one { width: 20px; }
+.ship-block.two { width: 20px; }
+.ship-block.three { width: 20px; }
+.ship-block.four { width: 20px; }
+
+/* Футер */
+.help-footer {
+  text-align: center;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(0, 255, 136, 0.2);
+  color: #00ff88;
+  font-size: 1.1rem;
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+}
+
+/* Адаптив */
+@media (max-width: 768px) {
+  .help-container {
+    padding: 24px;
+  }
+  
+  .help-title {
+    font-size: 1.8rem;
+  }
+  
+  .ships-info {
+    gap: 10px;
+  }
+  
+  .help-page {
+    padding: 12px;
+  }
+}

@@ -7,11 +7,11 @@ import { BrowserRouter } from 'react-router'
 import { PlayerProvider } from './context/player-context.tsx'
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode >
+  // <StrictMode >
     <BrowserRouter>
       <PlayerProvider>
         <App/>
       </PlayerProvider>
     </BrowserRouter>
-  </StrictMode>,
+  // </StrictMode>,
 )
