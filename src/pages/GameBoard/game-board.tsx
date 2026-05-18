@@ -80,9 +80,10 @@ const GameBoard : React.FC<GameBoard> = ({ }) => {
   const handleEnemyCellClick = (row: number, col: number): void => {
 
     if(!myTurn){return}
+    console.log("пытаюсь отправить выстрел")
     const cords : shootCords = {shoot:[row,col]}
     sendMessage(cords);
-    setMyTurn(false);
+    
     // Здесь будет логика отправки выстрола на бэкенд
   };
 
@@ -93,12 +94,13 @@ const GameBoard : React.FC<GameBoard> = ({ }) => {
       if (lastMessage?.isOwn) {
         setMyField(lastMessage.field);
         console.log("пытаюсь поставить свое поле")
-        setMyTurn(true)
+        setMyTurn(lastMessage.myTurn)
         
       }
       else {
         console.log("пытаюсь поставить врага поле")
         setEnemyField(lastMessage.field)
+        setMyTurn(lastMessage.myTurn)
       }
       if (lastMessage?.nickname){
         setEnemyNickname(lastMessage.nickname)

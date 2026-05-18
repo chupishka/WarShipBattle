@@ -1,5 +1,6 @@
 import React from 'react';
 import { AutoPlace } from '../../scripts/auto-place';
+import { AutoPlacePerelman } from '../../scripts/auto-place';
 
 
 // Тип для расстановки кораблей (из твоего GameSetup)
@@ -27,25 +28,7 @@ const strategy1 = (): Field => {
 
 const strategy2 = (): Field => {
   // Стратегия 2: корабли по центру и диагонали
-  const field: Field = Array(10).fill(null).map(() => Array(10).fill(0));
-  
-  // 4-палубный горизонтально по центру
-  field[4][3] = 4; field[4][4] = 4; field[4][5] = 4; field[4][6] = 4;
-  
-  // 3-палубные
-  field[2][1] = 3; field[3][1] = 3; field[4][1] = 3;
-  field[6][7] = 3; field[7][7] = 3; field[8][7] = 3;
-  
-  // 2-палубные
-  field[1][5] = 2; field[1][6] = 2;
-  field[6][2] = 2; field[7][2] = 2;
-  field[8][4] = 2; field[8][5] = 2;
-  
-  // 1-палубные
-  field[0][0] = 1;
-  field[9][0] = 1;
-  field[0][9] = 1;
-  field[9][9] = 1;
+  const field: Field = AutoPlacePerelman();
   
   return field;
 };

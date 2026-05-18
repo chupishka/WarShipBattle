@@ -5,6 +5,7 @@ import './App.css';
 import { useNavigate } from 'react-router';
 import AppRoutes from './routes/routes';
 import HeaderProfile from './header-profile';
+import GameHelp from './game-help';
 const { Header, Content } = Layout;
 
 const App: React.FC = () => {
@@ -55,10 +56,20 @@ const App: React.FC = () => {
               label: <span style={{ userSelect: 'none' }}>Профиль </span>,
               onClick: () => navigate('/profile'),
             },
+            {
+              key: '4',
+
+              label: <span style={{ userSelect: 'none' }}>Справка </span>,
+              onClick: () => navigate('/help'),
+            },
           ]}
           style={{ flex: 1, minWidth: 0 }}
         />
-        <HeaderProfile />
+        
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <HeaderProfile />
+          <GameHelp /> {/* Кнопка справки появится справа от профиля */}
+        </div>
       </Header>
       <Content style={{ padding: 30 }}>
         <div
