@@ -133,12 +133,14 @@ const GameHelp: React.FC = () => {
           <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
             <button style={styles.closeBtn} onClick={toggleModal}>&times;</button>
             
-            <h2 style={styles.title}>Разработчики</h2>
+            <h2 style={styles.title}>Сведения о разработчиках</h2>
 
             <div style={styles.text}>
-              <p>Разработка интерфейса и логики:</p>
+              <p>Самарский университет. Институт информатики и кибернетики.</p>
+              <p>Курсовой проект по дисциплине "Программная инженерия" по теме "Морской бой".</p>
+              <p>Разработчики (обучающиеся группы 6302-020302D).</p>
                   <ul style={{ paddingLeft: '20px', color: '#4ade80' }}>
-                    <li>Кирилл Хаперскйи</li>
+                    <li>Кирилл Хаперский</li>
                     <li>Егор Мартынов</li>
                     <li>Иван Цвилий</li>
                   </ul>
