@@ -53,6 +53,7 @@ const GameBoard : React.FC<GameBoard> = ({ }) => {
   const [enemyPhoto,setEnemyPhoto] = useState<number>(0);
   const navigate = useNavigate();
   const [showWinModal, setShowWinModal] = useState(false);
+  const [showLoseModal, setShowLoseModal] = useState(false);
   
   // useEffect(() => {
   //   if (!userConnected) return;
@@ -96,6 +97,9 @@ const GameBoard : React.FC<GameBoard> = ({ }) => {
       console.log(lastMessage)
       if (lastMessage?.Win === true) {
         setShowWinModal(true);
+      }
+      if (lastMessage?.Win === false) {
+        setShowLoseModal(true);
       }
       if (lastMessage?.isOwn) {
         setMyField(lastMessage.field);
@@ -148,7 +152,22 @@ const GameBoard : React.FC<GameBoard> = ({ }) => {
           </button>
         </div>
       </div>
+      
     )}
+    {showLoseModal && (
+      <div className="modal-overlay">
+        <div className="modal-content win-modal">
+          <div className="win-icon">😨</div>
+          <h2>Поражение!</h2>
+          <p>Все ваши корабли уничтожены</p>
+          <button className="ready-btn" onClick={() => navigate('/')}>
+            Завершить
+          </button>
+        </div>
+      </div>
+      
+    )}
+    
       
 
       <style>{`

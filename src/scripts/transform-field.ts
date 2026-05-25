@@ -182,7 +182,7 @@ export function transformField(field: Field, isEnemyField: boolean = false): Ren
             if (fullyDestroyed) {
               renderType = 'single-destroyed';
             } else if (condition === 'damaged') {
-              renderType = 'single-damaged';
+              renderType = 'center-damaged';
             } else {
               renderType = 'single-alive';
             }
@@ -191,7 +191,7 @@ export function transformField(field: Field, isEnemyField: boolean = false): Ren
             if (fullyDestroyed) {
               renderType = 'head-destroyed';
             } else if (condition === 'damaged') {
-              renderType = 'head-damaged';
+              renderType = 'center-damaged';
             } else {
               renderType = 'head-alive';
             }
