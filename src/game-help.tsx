@@ -133,7 +133,7 @@ const GameHelp: React.FC = () => {
           <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
             <button style={styles.closeBtn} onClick={toggleModal}>&times;</button>
             
-            <h2 style={styles.title}>Создатели</h2>
+            <h2 style={styles.title}>Разработчики</h2>
 
             <div style={styles.text}>
               <p>Разработка интерфейса и логики:</p>

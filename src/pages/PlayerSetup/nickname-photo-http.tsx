@@ -1,4 +1,4 @@
-import adress from "../../../adress.json"
+import adress from "../../../adress"
 
 
 

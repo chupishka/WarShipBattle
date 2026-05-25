@@ -11,3 +11,39 @@
   padding: 10px;
   margin-right: 1%;
 }
+.bg-video {
+  position: fixed;          /* ← было absolute, теперь не уедет при скролле */
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  z-index: 0;
+}
+
+/* Затемнение тоже фиксируем */
+.bg-overlay {
+  position: fixed;          /* ← тоже фиксим */
+  inset: 0;
+  background: rgba(15, 20, 25, 0.6);
+  z-index: 1;
+}
+
+/* Контент может скроллиться, но фон остаётся */
+.main-page {
+  position: relative;
+  min-height: 100vh;        /* ← min-height вместо 100vh, если контента много */
+  overflow-x: hidden;
+  background: #0f1419;
+  color: white;
+}
+
+/* Верхнее меню поверх всего */
+.main-content {
+  position: relative;
+  z-index: 2;
+  padding-top: 40px;        /* отступ, чтобы не прилипало к краю */
+}

@@ -4,9 +4,10 @@ import DraggedShip from './dragged-ship';
 import RoomCodeModal from './room-code-modal';
 import JoinRoomModal from './join-room-modal';
 import AutoStrategyModal from './auto-strategy-modal';
+import { getSetupCellRender, IMAGE_MAP, parseFieldToPlacedShips } from '../../scripts/setup-render-utils';
 
 import { useNavigate } from 'react-router';
-// Типы
+
 type CellState = 0 | 1 | 2 | 3 | 4;
 type Field = CellState[][];
 type GameMode = 'bot' | 'player' | 'code';
@@ -32,7 +33,6 @@ interface Position {
   col: number;
 }
 
-// Константы кораблей
 const INITIAL_SHIPS: Ship[] = [
   { id: 'battleship', size: 4, count: 1 },
   { id: 'cruiser', size: 3, count: 2 },
@@ -40,21 +40,17 @@ const INITIAL_SHIPS: Ship[] = [
   { id: 'submarine', size: 1, count: 4 },
 ];
 
-// Создать пустое поле
 const createEmptyField = (): Field =>
   Array(10)
     .fill(null)
     .map(() => Array(10).fill(0));
 
 const GameSetup: React.FC = () => {
-
   const navigate = useNavigate();
 
   const handleJoinSuccess = (code: string) => {
-    // navigate сразу подставляет code в URL
     navigate(`/game/${code}`);
   };
-
 
   const [gameMode, setGameMode] = useState<GameMode>('bot');
   const [botDifficulty, setBotDifficulty] = useState<BotDifficulty>('medium');
@@ -62,45 +58,28 @@ const GameSetup: React.FC = () => {
   const [shipsInDock, setShipsInDock] = useState<Ship[]>(INITIAL_SHIPS);
   const [placedShips, setPlacedShips] = useState<PlacedShip[]>([]);
 
-
-  // Состояние перетаскивания
   const [draggedShip, setDraggedShip] = useState<Ship | null>(null);
   const [draggedFromField, setDraggedFromField] = useState<PlacedShip | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [hoveredCell, setHoveredCell] = useState<Position | null>(null);
   const [previewOrientation, setPreviewOrientation] = useState<Orientation>('horizontal');
 
-  // Модалка
   const [showModal, setShowModal] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(false);
   const [showStrategyModal, setShowStrategyModal] = useState(false);
 
-
   const SetHandleStrategySelect = () => {
-  setShowStrategyModal(true);
-};
-
+    setShowStrategyModal(true);
+  };
 
   const handleStrategySelect = (field: Field) => {
-  setField(field);
-  
-  // Обновляем placedShips на основе field
-  const newPlacedShips: PlacedShip[] = [];
-  // ... логика парсинга field в placedShips
-  
-  setPlacedShips(newPlacedShips);
-  setShipsInDock(INITIAL_SHIPS.map(s => ({ ...s, count: 0 })));
-};
+    setField(field);
+    // Парсим поле в placedShips, чтобы отрисовать картинки
+    const newPlacedShips = parseFieldToPlacedShips(field);
+    setPlacedShips(newPlacedShips);
+    setShipsInDock(INITIAL_SHIPS.map(s => ({ ...s, count: 0 })));
+  };
 
-  // const { lastMessage, sendMessage } = useGameSocket('game');
-  // useEffect(() => {
-  //   if (lastMessage?.code) {
-  //     setRoomCode(lastMessage.code);
-      
-  //   }
-  // }, [lastMessage]);
-
-  // Отслеживание мыши
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setMousePos({ x: e.clientX, y: e.clientY });
@@ -109,7 +88,6 @@ const GameSetup: React.FC = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  // Поворот корабля ПКМ
   useEffect(() => {
     const handleContextMenu = (e: MouseEvent) => {
       if (draggedShip) {
@@ -121,12 +99,10 @@ const GameSetup: React.FC = () => {
     return () => window.removeEventListener('contextmenu', handleContextMenu);
   }, [draggedShip]);
 
-  // Проверка валидности установки
   const isValidPlacement = useCallback(
     (ship: Ship, row: number, col: number, orientation: Orientation): boolean => {
       const cells: Position[] = [];
 
-      // Проверка границ
       for (let i = 0; i < ship.size; i++) {
         const r = orientation === 'horizontal' ? row : row + i;
         const c = orientation === 'horizontal' ? col + i : col;
@@ -135,7 +111,6 @@ const GameSetup: React.FC = () => {
         cells.push({ row: r, col: c });
       }
 
-      // Проверка зоны 1 клетки вокруг
       const occupied = new Set(
         placedShips
           .filter((s) => s.id !== draggedFromField?.id)
@@ -144,7 +119,6 @@ const GameSetup: React.FC = () => {
             for (let i = 0; i < s.size; i++) {
               const r = s.orientation === 'horizontal' ? s.row : s.row + i;
               const c = s.orientation === 'horizontal' ? s.col + i : s.col;
-              // Добавляем сам корабль и зону вокруг
               for (let dr = -1; dr <= 1; dr++) {
                 for (let dc = -1; dc <= 1; dc++) {
                   const nr = r + dr;
@@ -164,7 +138,6 @@ const GameSetup: React.FC = () => {
     [placedShips, draggedFromField],
   );
 
-  // Выбор корабля из дока
   const handleSelectFromDock = (ship: Ship) => {
     if (ship.count > 0) {
       setDraggedShip(ship);
@@ -173,10 +146,8 @@ const GameSetup: React.FC = () => {
     }
   };
 
-  // Клик по клетке поля
   const handleCellClick = (row: number, col: number) => {
     if (!draggedShip) {
-      // Проверяем, есть ли тут корабль — можно взять обратно
       const shipHere = placedShips.find((s) => {
         for (let i = 0; i < s.size; i++) {
           const r = s.orientation === 'horizontal' ? s.row : s.row + i;
@@ -187,7 +158,6 @@ const GameSetup: React.FC = () => {
       });
 
       if (shipHere) {
-        // Возвращаем в док
         setShipsInDock((prev) =>
           prev.map((s) => (s.size === shipHere.size ? { ...s, count: s.count + 1 } : s)),
         );
@@ -209,7 +179,6 @@ const GameSetup: React.FC = () => {
       return;
     }
 
-    // Установка корабля
     if (isValidPlacement(draggedShip, row, col, previewOrientation)) {
       const newShip: PlacedShip = {
         id: `${draggedShip.id}-${Date.now()}`,
@@ -230,7 +199,6 @@ const GameSetup: React.FC = () => {
         return newField;
       });
 
-      // Уменьшаем счетчик в доке
       if (!draggedFromField) {
         setShipsInDock((prev) =>
           prev.map((s) => (s.size === draggedShip.size ? { ...s, count: s.count - 1 } : s)),
@@ -243,14 +211,12 @@ const GameSetup: React.FC = () => {
     }
   };
 
-  // Наведение на клетку
   const handleCellHover = (row: number, col: number) => {
     if (draggedShip) {
       setHoveredCell({ row, col });
     }
   };
 
-  // Сброс
   const handleReset = () => {
     setField(createEmptyField());
     setPlacedShips([]);
@@ -259,54 +225,37 @@ const GameSetup: React.FC = () => {
     setDraggedFromField(null);
   };
 
-  // Авто-расстановка (заглушка для бэкенда)
   const handleAutoPlace = async () => {
-    // Здесь будет запрос к бэкенду
-    // const response = await fetch('/api/auto-place', { method: 'POST', body: JSON.stringify({ strategy }) });
-    // const newField: Field = await response.json();
-    
-    // Заглушка:
     const newField: Field = createEmptyField();
     // ... логика заполнения от бэкенда
-
     setField(newField);
-    setPlacedShips([]); // Обновить после получения данных
+    // Парсим поле в placedShips для отрисовки картинок
+    setPlacedShips(parseFieldToPlacedShips(newField));
     setShipsInDock(INITIAL_SHIPS.map((s) => ({ ...s, count: 0 })));
   };
 
-  // Создание игры
   const handleConnection = async () => {
     const allShipsPlaced = shipsInDock.every((s) => s.count === 0);
     if (!allShipsPlaced) return;
     if (gameMode === 'code') {
-      
-      // sendMessage({field});
       setShowJoinModal(true);
     }
-  }
-
+  };
 
   const handleCreate = async () => {
     const allShipsPlaced = shipsInDock.every((s) => s.count === 0);
     if (!allShipsPlaced) return;
 
-    if (gameMode === 'player') {
-      
-      // sendMessage({field});
+    if (gameMode === 'player' || gameMode === 'bot') {
       setShowModal(true);
-    } else {
-      // Создание игры с ботом
-      console.log('Создание игры с ботом:', { difficulty: botDifficulty, field });
     }
   };
 
   const canCreate = shipsInDock.every((s) => s.count === 0);
 
-  // Получение цвета подсветки клетки
   const getCellHighlight = (row: number, col: number): string | null => {
     if (!draggedShip || !hoveredCell) return null;
 
-    // Проверяем, входит ли клетка в зону корабля
     const shipCells: Position[] = [];
     for (let i = 0; i < draggedShip.size; i++) {
       const r = previewOrientation === 'horizontal' ? hoveredCell.row : hoveredCell.row + i;
@@ -328,7 +277,6 @@ const GameSetup: React.FC = () => {
 
   return (
     <div className="game-setup">
-      {/* Выбор режима */}
       <div className="mode-selector">
         <button className={gameMode === 'bot' ? 'active' : ''} onClick={() => setGameMode('bot')}>
           Игра с ботом
@@ -345,7 +293,6 @@ const GameSetup: React.FC = () => {
         </button>
       </div>
 
-      {/* Выбор сложности бота */}
       {gameMode === 'bot' && (
         <div className="difficulty-selector">
           <span>Сложность:</span>
@@ -360,42 +307,48 @@ const GameSetup: React.FC = () => {
         </div>
       )}
 
-      {/* Игровое поле */}
       <div className="field-container">
         <div className="coordinates-top">
           {'ABCDEFGHIJ'.split('').map((l) => (
             <span key={l}>{l}</span>
           ))}
         </div>
-        <div className="field-wrapper">
-          <div className="coordinates-left">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
-              <span key={n}>{n}</span>
-            ))}
-            {/* {'12345678910'.match(/\d{1,1}/g)?.map(n => <span key={n}>{n}</span>)} */}
-          </div>
-          <div className="battle-field">
-            {field.map((row, rIdx) => (
-              <div key={rIdx} className="field-row">
-                {row.map((cell, cIdx) => {
-                  const highlight = getCellHighlight(rIdx, cIdx);
-                  return (
-                    <div
-                      key={cIdx}
-                      className={`field-cell ${cell > 0 ? 'has-ship' : ''} ${highlight || ''}`}
-                      onClick={() => handleCellClick(rIdx, cIdx)}
-                      onMouseEnter={() => handleCellHover(rIdx, cIdx)}>
-                      {cell > 0 && <div className="ship-part" />}
-                    </div>
-                  );
-                })}
-              </div>
-            ))}
-          </div>
+        <div className="battle-field">
+          {field.map((row, rIdx) => (
+            <div key={rIdx} className="field-row">
+              {row.map((cell, cIdx) => {
+                const highlight = getCellHighlight(rIdx, cIdx);
+                const shipRender = getSetupCellRender(placedShips, rIdx, cIdx);
+                return (
+                  <div
+                    key={cIdx}
+                    className={`field-cell ${cell > 0 ? 'has-ship' : ''} ${highlight || ''}`}
+                    onClick={() => handleCellClick(rIdx, cIdx)}
+                    onMouseEnter={() => handleCellHover(rIdx, cIdx)}>
+                    {shipRender ? (
+                      <img
+                        src={IMAGE_MAP[shipRender.type]}
+                        alt={shipRender.type}
+                        className="ship-image"
+                        style={{ transform: `rotate(${shipRender.rotation}deg)` }}
+                        draggable={false}
+                      />
+                    ) : (
+                      <img
+                        src={IMAGE_MAP.water}
+                        alt="water"
+                        className="ship-image"
+                        draggable={false}
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Док с кораблями */}
       <div className="ship-dock">
         <h4>Корабли для расстановки</h4>
         <div className="dock-ships">
@@ -408,7 +361,6 @@ const GameSetup: React.FC = () => {
         </div>
       </div>
 
-      {/* Кнопки управления */}
       <div className="control-buttons">
         <button className="reset-btn" onClick={handleReset}>
           Сброс
@@ -416,30 +368,23 @@ const GameSetup: React.FC = () => {
         <button className="auto-btn" onClick={SetHandleStrategySelect}>
           Авто (стратегии)
         </button>
-        {(gameMode==='code') ? (<button
-          className={`create-btn ${canCreate ? 'active' : ''}`}
-          onClick={handleConnection}
-          disabled={!canCreate}>
-          Подключиться
-        </button>) : (
+        {(gameMode==='code') ? (
           <button
-          className={`create-btn ${canCreate ? 'active' : ''}`}
-          onClick={handleCreate}
-          disabled={!canCreate}>
-          Создать
-        </button>
-        )
-
-        }
-        {/* <button
-          className={`create-btn ${canCreate ? 'active' : ''}`}
-          onClick={handleCreate}
-          disabled={!canCreate}>
-          Создать
-        </button> */}
+            className={`create-btn ${canCreate ? 'active' : ''}`}
+            onClick={handleConnection}
+            disabled={!canCreate}>
+            Подключиться
+          </button>
+        ) : (
+          <button
+            className={`create-btn ${canCreate ? 'active' : ''}`}
+            onClick={handleCreate}
+            disabled={!canCreate}>
+            Создать
+          </button>
+        )}
       </div>
 
-      {/* Перетаскиваемый корабль */}
       {draggedShip && (
         <DraggedShip
           ship={draggedShip}
@@ -448,10 +393,9 @@ const GameSetup: React.FC = () => {
         />
       )}
 
-      {/* Модалка с кодом */}
-      {showModal && <RoomCodeModal field={field} onClose={() => setShowModal(false)} />}
-      {showJoinModal && <JoinRoomModal onSuccess = {handleJoinSuccess} onClose={() => setShowJoinModal(false) } fieldTo = {field} />}
-      {showStrategyModal && (<AutoStrategyModal onClose={() => setShowStrategyModal(false)}onSelect={handleStrategySelect} />)}  
+      {showModal && (<RoomCodeModal field={field} onClose={() => setShowModal(false)} isBot={gameMode === 'bot'} botDifficulty={botDifficulty} /> )}
+      {showJoinModal && <JoinRoomModal onSuccess={handleJoinSuccess} onClose={() => setShowJoinModal(false)} fieldTo={field} />}
+      {showStrategyModal && (<AutoStrategyModal onClose={() => setShowStrategyModal(false)} onSelect={handleStrategySelect} />)}  
 
       <style>{`
         .game-setup {
@@ -549,6 +493,7 @@ const GameSetup: React.FC = () => {
           align-items: center;
           justify-content: center;
           transition: all 0.1s;
+          overflow: hidden;
         }
 
         .field-cell.valid {
@@ -561,11 +506,12 @@ const GameSetup: React.FC = () => {
           box-shadow: inset 0 0 0 2px #ef4444;
         }
 
-        .ship-part {
-          width: 32px;
-          height: 32px;
-          background: #4ade80;
-          border-radius: 4px;
+        .ship-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          pointer-events: none;
+          display: block;
         }
 
         .ship-dock {
@@ -613,17 +559,16 @@ const GameSetup: React.FC = () => {
           background: #3a4451;
         }
 
-        .ship-cell {
+        .dock-ship-cell {
           width: 36px;
           height: 36px;
-          background: #4ade80;
-          border-radius: 4px;
+          object-fit: cover;
+          display: block;
         }
 
         .dragged-ship {
           position: fixed;
           display: flex;
-          gap: 2px;
           pointer-events: none;
           z-index: 1000;
           opacity: 0.8;
@@ -665,7 +610,6 @@ const GameSetup: React.FC = () => {
           cursor: pointer;
         }
 
-        /* Модалка */
         .modal-overlay {
           position: fixed;
           top: 0;

@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-
-// Типы
+import React from 'react';
+import { IMAGE_MAP } from '../../scripts/setup-render-utils';
 
 type Orientation = 'horizontal' | 'vertical';
 
@@ -10,9 +9,6 @@ interface Ship {
   count: number;
 }
 
-// Константы кораблей
-
-// Компонент перетаскиваемого корабля (следует за курсором)
 const DraggedShip: React.FC<{
   ship: Ship;
   orientation: Orientation;
@@ -25,12 +21,42 @@ const DraggedShip: React.FC<{
         left: position.x,
         top: position.y,
         flexDirection: orientation === 'horizontal' ? 'row' : 'column',
+        gap: 0, // безшовная стыковка
       }}>
-      {Array(ship.size)
-        .fill(null)
-        .map((_, i) => (
-          <div key={i} className="ship-cell" />
-        ))}
+      {Array.from({ length: ship.size }).map((_, i) => {
+        let type: 'single' | 'head' | 'center';
+        let rotation: number;
+        
+        if (ship.size === 1) {
+          type = 'single';
+          rotation = 0;
+        } else if (i === 0) {
+          type = 'head';
+          rotation = orientation === 'horizontal' ? 270 : 0;
+        } else if (i === ship.size - 1) {
+          type = 'head';
+          rotation = orientation === 'horizontal' ? 90 : 180;
+        } else {
+          type = 'center';
+          rotation = orientation === 'horizontal' ? 90 : 0;
+        }
+        
+        return (
+          <img
+            key={i}
+            src={IMAGE_MAP[type]}
+            alt={type}
+            style={{
+              width: 40,
+              height: 40,
+              transform: `rotate(${rotation}deg)`,
+              objectFit: 'cover',
+              display: 'block',
+            }}
+            draggable={false}
+          />
+        );
+      })}
     </div>
   );
 };
