@@ -10,7 +10,8 @@ const AppRoutes = () => {
     { path: '/', element: <MainPage /> },
     { path: '/create-game', element: <CreateGame /> },
     { path: '/profile', element: <PlayerSetup /> },
-    { path: "/game/:roomCode", element : <GameBoard />},
+    { path: "/:opponent/:roomCode", element : <GameBoard />},
+    // { path: "/bot/:roomCode", element : <GameBoard />},
     { path: '*', element: <NoMatchPage /> },
     { path: "/help", element : <HelpPage />},
     

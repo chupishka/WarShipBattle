@@ -1,50 +1,62 @@
-import React, { useState } from 'react';
-
-// Константы состояний
-const CELL_STATE = {
-  EMPTY: 0,
-  MISS: 1,
-  UNDAMAGED: 2,
-  DAMAGED: 3,
-  DESTROYED: 4,
-};
-type CellState = 0 | 1 | 2 | 3 | 4;
+import React from 'react';
+import type { RenderCell, RenderCellType } from '../../scripts/transform-field';
 
 interface CellProps {
-  state: CellState;
+  renderCell: RenderCell;
   onClick: () => void;
   isHovered: boolean;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
 }
+export const CELL_STATE = {
+  EMPTY: 0,
+  MISS: 1,
+  UNDAMAGED: 2,
+  DAMAGED: 3,
+  DESTROYED: 4,
+} as const;
+type CellState = 0 | 1 | 2 | 3 | 4;
+// Маппинг типов к путям картинок — ЗАМЕНИ на свои пути к PNG
+const IMAGE_MAP: Record<RenderCellType, string> = {
+  'water': '/img/ships/water.png',
+  'miss': '/img/ships/splash.png',
+  'single-alive': '/img/ships/1_ship.png',
+  'single-damaged': '/img/ships/1_ship_damaged.png',
+  'single-destroyed': '/img/ships/1_ship_destroyed.png',
+  'head-alive': '/img/ships/ship_bow.png',
+  'head-damaged': '/img/ships/ship_bow_damaged.png',
+  'head-destroyed': '/img/ships/ship_bow_destroyed.png',
+  'center-alive': '/img/ships/ship_mid.png',
+  'center-damaged': '/img/ships/ship_mid_damaged.png',
+  'center-destroyed': '/img/ships/ship_mid_destroyed.png',
+};
 
-// Компонент одной клетки
-const Cell: React.FC<CellProps> = ({ state, onClick, isHovered, onMouseEnter, onMouseLeave }) => {
-  const getCellContent = () => {
-    switch (state) {
-      case CELL_STATE.EMPTY:
-        return <div className="cell-water" />;
-      case CELL_STATE.MISS:
-        return <div className="cell-miss" />;
-      case CELL_STATE.UNDAMAGED:
-        return <div className="cell-ship" />;
-      case CELL_STATE.DAMAGED:
-        return <div className="cell-damaged" />;
-      case CELL_STATE.DESTROYED:
-        return <div className="cell-destroyed" />;
-      default:
-        return null;
-    }
-  };
+const Cell: React.FC<CellProps> = ({ renderCell, onClick, isHovered, onMouseEnter, onMouseLeave }) => {
+  const imagePath = IMAGE_MAP[renderCell.type];
+
   return (
     <div
       className={`cell ${isHovered ? 'cell-hovered' : ''}`}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}>
-      {getCellContent()}
+      onMouseLeave={onMouseLeave}
+    >
+      <img 
+        src={imagePath}
+        alt={renderCell.type}
+        className="cell-image"
+        style={{ 
+          transform: `rotate(${renderCell.rotation}deg)`,
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          pointerEvents: 'none'
+        }}
+        draggable={false}
+      />
     </div>
   );
 };
 
 export default Cell;
+

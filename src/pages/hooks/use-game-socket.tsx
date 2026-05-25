@@ -1,6 +1,6 @@
 // hooks/useGameSocket.ts
 import { useEffect, useRef, useState, useCallback } from 'react';
-import adress from "../../../adress.json"
+import adress from "../../../adress"
 
 
 

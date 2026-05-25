@@ -7,10 +7,20 @@ import GameBoard from '../GameBoard/game-board';
 const MainPage: React.FC = () => {
   const {playerData} = usePlayer();
   return (
-    <div>
-      <span className="player-name">{playerData.nickname}</span>
-    </div>
-  );
+  <div className="main-page">
+    <video
+      className="bg-video"
+      autoPlay
+      loop
+      muted
+      playsInline
+      src="/2026-05-18 21-54-39.mp4"   // файл в public/bg-video.mp4
+    />
+    {/* <div className="bg-overlay" /> */}
+    
+    
+  </div>
+);
 };
 
 export default MainPage;
