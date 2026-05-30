@@ -62,11 +62,12 @@ const GameHelp: React.FC = () => {
       cursor: 'pointer',
     },
     title: {
-      color: '#4ade80',
-      marginTop: '0',
-      marginBottom: '20px',
-      fontSize: '22px',
-    },
+    color: '#4ade80',
+    marginTop: '0',
+    marginBottom: '20px',
+    fontSize: '22px',
+    textAlign: 'center' as const,  // ← центрируем заголовок
+  },
     sectionTitle: {
       color: '#4ade80',
       fontSize: '18px',
@@ -74,10 +75,11 @@ const GameHelp: React.FC = () => {
       marginBottom: '10px',
     },
     text: {
-      lineHeight: '1.6',
-      color: '#cbd5e1',
-      fontSize: '15px',
-    },
+    lineHeight: '1.6',
+    color: '#cbd5e1',
+    fontSize: '15px',
+    textAlign: 'center' as const,  // ← центрируем весь текст внутри
+  },
     code: {
       backgroundColor: 'rgba(74, 222, 128, 0.15)',
       color: '#4ade80',
