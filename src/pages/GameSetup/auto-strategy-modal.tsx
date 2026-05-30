@@ -55,14 +55,14 @@ const AutoStrategyModal: React.FC<AutoStrategyModalProps> = ({ onClose, onSelect
         <div className="strategies-container">
           <button className="strategy-btn" onClick={handleStrategy1}>
             <span className="strategy-number">1</span>
-            <span className="strategy-name">Угловая защита</span>
-            <span className="strategy-desc">Корабли по периметру поля</span>
+            <span className="strategy-name">Случайная расстановка</span>
+            <span className="strategy-desc">Корабли по воле случая</span>
           </button>
           
           <button className="strategy-btn" onClick={handleStrategy2}>
             <span className="strategy-number">2</span>
-            <span className="strategy-name">Центральный удар</span>
-            <span className="strategy-desc">Корабли в центре и на диагонали</span>
+            <span className="strategy-name">Расстановка Перельмана</span>
+            <span className="strategy-desc">Тяжелые корабли в одном месте</span>
           </button>
         </div>
 

@@ -206,7 +206,7 @@
 .ship-group {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 0px;
   background: rgba(30, 41, 59, 0.6);
   padding: 8px 12px;
   border-radius: 6px;
